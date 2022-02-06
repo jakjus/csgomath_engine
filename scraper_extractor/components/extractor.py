@@ -25,21 +25,56 @@ class Extractor:
                  'Field-Tested': 0.4318, 'Battle-Scarred': 0.0993,
                  'Well-Worn': 0.0792}
 
+    keys_off_market = [
+            {'name': 'Fracture Case Key', 'icon_url': 'https://static.wikia.nocookie.net/cswikia/images/2/2a/Fracture_Case_Key.png/revision/latest?cb=20201207135639', 'asset_description': {'descriptions': ['This key opens only Fracture Cases']}},
+            {'name': 'Dreams & Nightmares Case', 'icon_url': 'https://static.wikia.nocookie.net/cswikia/images/2/21/Crate_key_community_30.png/revision/latest?cb=20220121083708', 'asset_description': {'descriptions': ['This key opens only Dreams & Nightmares Cases']}},
+            {'name': 'Shattered Web Case Key', 'icon_url': 'https://static.wikia.nocookie.net/cswikia/images/2/2f/Shattered_Web_Case_Key.png/revision/latest?cb=20201206140152', 'asset_description': {'descriptions': ['This key opens only Shattered Web Cases']}},
+            {'name': 'Snakebite Case Key', 'icon_url': 'https://static.wikia.nocookie.net/cswikia/images/5/51/Snakebite-case-key.png/revision/latest?cb=20210528135645', 'asset_description': {'descriptions': ['This key opens only Snakebite Cases']}}
+            ]
+
     def __init__(self, all_items=[], pickle_name=''):
         self.all_items = all_items
         if pickle_name:
             self.load_from_pickle(pickle_name)
         self.cases = self.filter_items_end('Case', self.all_items)
-        # self.case_keys = self.filter_items_end('Case Key', self.all_items)
+        self.case_keys = self.filter_items_end('Case Key', self.all_items)
+        self.case_keys += self.filter_items_end('eSports Key', self.all_items)
+        self.case_keys += self.keys_off_market
         self.special_items_found = {}
 
     def load_from_pickle(self, pickle_name):
         with open(pickle_name+'.pickle', 'rb') as handle:
             self.all_items = pickle.load(handle)
 
+    def remove_duplicates(self):
+        for index, case in enumerate(self.cases):
+            if case['name'] in list(map(lambda x: x['name'], self.cases[index+1:])):
+                self.cases.remove(case)
+
     def add_sale_price(self):
         for case in self.cases:
             case['sale_price'] = text_to_price(case['sale_price_text'])
+
+    def add_key(self):
+        for case in self.cases:
+            for key in self.case_keys:
+                if case['name'] in key['name']:
+                    case['key'] = key
+                    break
+            if 'key' in case.keys():
+                continue
+            for key in self.case_keys:
+                if case['name'].split()[0] in key['name'].split() and case['name'].split()[1] in key['name'].split():
+                    case['key'] = key
+                    break
+            if 'key' in case.keys():
+                continue
+            for key in self.case_keys:
+                if case['name'].split()[0] in key['name'].split():
+                    case['key'] = key
+                    break
+            if 'key' not in case.keys():
+                print('Key not found for', case['name'])
 
     def add_case_value(self):
         if len(self.cases) == 0:
@@ -105,7 +140,12 @@ class Extractor:
         return {'total': round(total)}  # , 'item_details': item_details}
 
     def get_estimated_case_value(self, case):
-        desc = case['asset_description']['descriptions']
+        try:
+            desc = case['asset_description']['descriptions']
+        except KeyError:
+            print('Error getting descriptions for', case['name'])
+            print(case)
+            raise
         total_d = {}
         for odd_rarity in self.odds_rarity:
             total_d[odd_rarity] = {}
@@ -145,11 +185,11 @@ class Extractor:
         unique_itemname_list = []
         for itemname in itemname_list:
             u = itemname.replace('StatTrak™ ', '')\
-                    .replace(' (Factory New)', '')\
-                    .replace(' (Minimal Wear)', '')\
-                    .replace(' (Field-Tested)', '')\
-                    .replace(' (Battle-Scarred)', '')\
-                    .replace(' (Well-Worn)', '')
+                .replace(' (Factory New)', '')\
+                .replace(' (Minimal Wear)', '')\
+                .replace(' (Field-Tested)', '')\
+                .replace(' (Battle-Scarred)', '')\
+                .replace(' (Well-Worn)', '')
             if itemname not in unique_itemname_list:
                 unique_itemname_list.append(u)
         return unique_itemname_list
@@ -179,6 +219,12 @@ class Extractor:
             items))
 
     def extract_full(self):
+        print('Removing duplicates...')
+        self.remove_duplicates()
+        print('Done')
+        print('Adding keys...')
+        self.add_key()
+        print('Done')
         print('Adding sale price...')
         self.add_sale_price()
         print('Done')

@@ -25,7 +25,8 @@ class Scraper:
 
     def items_search_url(self, page):
         return f'https://steamcommunity.com/market/search/render/\
-                ?query=&start={str(page*100)}&count=100&appid=730&norender=1'
+                ?query=&start={str(page*100)}&count=100&appid=730&norender=1\
+                &sort_column=name&sort_dir=asc'
 
     def scrape_page(self, url, current_retries=0):
         if current_retries == self.max_retries:

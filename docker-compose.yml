@@ -1,0 +1,34 @@
+version: '3.1'
+services:
+  db:
+    image: mariadb:10.6
+    restart: always
+    ports:
+      - 3306:3306
+    volumes:
+      - mariadb-storage:/var/lib/mysql
+      - ./db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - ${ADMINER_PORT:8080}:8080
+
+  scraper_extractor:
+    build: ./scraper_extractor
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      SC_EX_MINUTES_COOLDOWN: ${SC_EX_MINUTES_COOLDOWN}
+
+        # api:
+        #   build: ./api
+        #   restart: always
+        #   environment:
+        #     MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+
+volumes:
+  mariadb-storage:
