@@ -27,13 +27,13 @@ def main():
         extractor = Extractor(pickle_name='steam_market_items')
         extractor.extract_full()
         cases = extractor.cases
+        if args.debug:
+            pp.pprint(cases)
     if args.upload:
         if 'cases' not in locals():
             extractor = Extractor(pickle_name='steam_market_items')
             extractor.extract_full()
             cases = extractor.cases
-            if args.debug:
-                pp.pprint(cases[-1])
         uploader = Uploader(cases)
         uploader.upload()
 

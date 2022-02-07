@@ -24,9 +24,20 @@ class Scraper:
                 protocol=pickle.HIGHEST_PROTOCOL)
 
     def items_search_url(self, page):
+        # We should sort items to avoid randomness of item activity
+        # while browsing pages, which may result in skipping, by using:
+
+        # &sort_column=name&sort_dir=asc'
+
+        # However, adding the params changes the response 
+        # - case description is not added. 
+
+        # Therefore, we browse every 98 items, to leave
+        # 2 items handicap which could be moved in-between
+        # two neighboring page reads.
         return f'https://steamcommunity.com/market/search/render/\
-                ?query=&start={str(page*100)}&count=100&appid=730&norender=1\
-                &sort_column=name&sort_dir=asc'
+                ?query=&start={str(page*98)}&count=100&appid=730&norender=1'
+
 
     def scrape_page(self, url, current_retries=0):
         if current_retries == self.max_retries:
@@ -40,13 +51,19 @@ class Scraper:
             return self.scrape_page(url, current_retries+1)
         return page
 
+    def remove_duplicates(self):
+        hash_names = list(map(lambda x: x['hash_name'], self.items))
+        for index, item in enumerate(self.items):
+            if item['hash_name'] in hash_names:
+                self.items.remove(item)
+
     def get_csgo_items(self):
         self.all_items = []
         # Get total_pages first to init tqdm(for loop)
         url = self.items_search_url(0)
         page = self.scrape_page(url)
         d = page.json()
-        total_pages = math.floor(int(d['total_count'])/100)
+        total_pages = math.floor(int(d['total_count'])/98)
 
         print('Scraping started...')
         for i in tqdm(range(total_pages)):
@@ -56,3 +73,4 @@ class Scraper:
             for el in d['results']:
                 el['timestamp'] = time.time()
             self.all_items += d['results']
+
