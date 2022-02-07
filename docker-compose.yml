@@ -15,7 +15,7 @@ services:
     image: adminer
     restart: always
     ports:
-      - ${ADMINER_PORT:8080}:8080
+      - 8080:8080
 
   scraper_extractor:
     build: ./scraper_extractor

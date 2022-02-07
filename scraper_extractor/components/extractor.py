@@ -82,7 +82,10 @@ class Extractor:
         if 'total' in self.cases[0]:
             raise Exception('Chest [0] already has a value')
         for case in self.cases:
-            case['total'] = self.get_estimated_case_value(case)['total']
+            try:
+                case['total'] = self.get_estimated_case_value(case)['total']
+            except KeyError:
+                self.cases.remove(case)
 
     def get_estimated_one_weapon_value(self, name, toadd=True):
         total = 0
@@ -140,12 +143,7 @@ class Extractor:
         return {'total': round(total)}  # , 'item_details': item_details}
 
     def get_estimated_case_value(self, case):
-        try:
-            desc = case['asset_description']['descriptions']
-        except KeyError:
-            print('Error getting descriptions for', case['name'])
-            print(case)
-            raise
+        desc = case['asset_description']['descriptions']
         total_d = {}
         for odd_rarity in self.odds_rarity:
             total_d[odd_rarity] = {}
