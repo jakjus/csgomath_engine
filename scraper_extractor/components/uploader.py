@@ -38,8 +38,8 @@ class Uploader:
             self.cursor.execute("INSERT IGNORE INTO prices (caseId, sale_price, total, timestamp) VALUES (%s, %s, %s, %s)",
                                 (caseId, case['sale_price'], case['total'], int(case['timestamp'])))
             if 'key' in case.keys():
-                self.cursor.execute("INSERT IGNORE INTO keys (caseId, name, icon_url) VALUES (%s, %s, %s)", (caseId, case['key']['name'], case['key']['icon_url']))
-                self.cursor.execute("SELECT id FROM keys WHERE name=%s", [case['key']['name']])
+                self.cursor.execute("INSERT IGNORE INTO caseKeys (caseId, name, icon_url) VALUES (%s, %s, %s)", (caseId, case['key']['name'], case['key']['icon_url']))
+                self.cursor.execute("SELECT id FROM caseKeys WHERE name=%s", [case['key']['name']])
                 keyId = list(self.cursor)[0][0]
 
             # Case description

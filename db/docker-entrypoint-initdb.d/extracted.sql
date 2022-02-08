@@ -11,6 +11,19 @@ DROP DATABASE IF EXISTS `extracted`;
 CREATE DATABASE `extracted` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
 USE `extracted`;
 
+DROP TABLE IF EXISTS `caseKeys`;
+CREATE TABLE `caseKeys` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `caseId` int(11) NOT NULL,
+  `name` varchar(32) NOT NULL,
+  `icon_url` varchar(512) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`),
+  KEY `caseId` (`caseId`),
+  CONSTRAINT `caseKeys_ibfk_1` FOREIGN KEY (`caseId`) REFERENCES `cases` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
 DROP TABLE IF EXISTS `cases`;
 CREATE TABLE `cases` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -47,19 +60,6 @@ CREATE TABLE `descriptionPrices` (
 ) ENGINE=InnoDB AUTO_INCREMENT=2867 DEFAULT CHARSET=utf8mb4;
 
 
-DROP TABLE IF EXISTS `keys`;
-CREATE TABLE `keys` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `caseId` int(11) NOT NULL,
-  `name` varchar(32) NOT NULL,
-  `icon_url` varchar(512) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`),
-  KEY `caseId` (`caseId`),
-  CONSTRAINT `keys_ibfk_1` FOREIGN KEY (`caseId`) REFERENCES `cases` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-
 DROP TABLE IF EXISTS `keysDescriptionFields`;
 CREATE TABLE `keysDescriptionFields` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -69,7 +69,7 @@ CREATE TABLE `keysDescriptionFields` (
   `color` varchar(6) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `keyId_value_ind` (`keyId`,`value`,`ind`),
-  CONSTRAINT `keysDescriptionFields_ibfk_1` FOREIGN KEY (`keyId`) REFERENCES `keys` (`name`)
+  CONSTRAINT `keysDescriptionFields_ibfk_1` FOREIGN KEY (`keyId`) REFERENCES `caseKeys` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
@@ -86,4 +86,4 @@ CREATE TABLE `prices` (
 ) ENGINE=InnoDB AUTO_INCREMENT=386 DEFAULT CHARSET=utf8mb4;
 
 
--- 2022-02-06 22:33:40
+-- 2022-02-08 12:02:25
