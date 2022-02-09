@@ -45,7 +45,7 @@ class Uploader:
             self.cursor.execute("INSERT IGNORE INTO prices (caseId, sale_price, total, timestamp) VALUES (%s, %s, %s, %s)",
                                 (caseId, case['sale_price'], case['total'], int(case['timestamp'])))
             if 'key' in case.keys():
-                self.cursor.execute("INSERT INTO caseKeys (caseId, name, icon_url) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE icon_url=VALUES(icon_url)", (caseId, case['key']['name'], transform_icon(case['key']['asset_description']['icon_url'])))
+                self.cursor.execute("INSERT INTO caseKeys (caseId, name, icon_url) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE name=VALUES(name) icon_url=VALUES(icon_url)", (caseId, case['key']['name'], transform_icon(case['key']['asset_description']['icon_url'])))
                 self.cursor.execute("SELECT id FROM caseKeys WHERE name=%s", [case['key']['name']])
                 keyId = list(self.cursor)[0][0]
 

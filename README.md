@@ -2,12 +2,14 @@
 
 Backend of web application "CS:GO Math" - interacting with [Counter-Strike: Global Offensive Market](https://steamcommunity.com/market/search?appid=730).
 
-Consists of three main components:
+Consists of four main components:
 - **Scraper** - scrapes (reads) CS:GO market data from [Valve's website](https://steamcommunity.com/market/search?appid=730).
 
 - **Extractor** - extracts cases from all items and calculate expected value of each case.
 
 - **Uploader** - uploads extracted data to database *(MariaDB)*.
+
+- **API** - serves non-sensitive database data to frontend *(Flask)*.
 
 ## Motivation
 *Valve* does not officially offer API for market, hence scraping techniques are used. 
@@ -26,6 +28,7 @@ Install:
 Install necessary dependencies:
 ```bash
 pip install -r scraper_extractor/requirements.txt
+pip install -r api/requirements.txt
 ```
 
 ## Usage
@@ -35,7 +38,12 @@ Create your `.env` file from template and adjust variables if needed:
 cp .env.example .env
 ```
 
-To run all services (scrape+extract+upload) with cron every 12 hours (default):
+Stack initialization will:
+- run scrape+extract+upload with cron every 12 hours (default)
+- init and run DB
+- run API
+
+Use:
 ```
 docker-compose up -d
 ```
@@ -51,6 +59,18 @@ Flags:
 - `--extract, -e` Extract.
 - `--upload, -u` Upload.
 
+Run API:
+```
+cd api
+gunicorn -b 0.0.0.0:3010 app:app
+```
+
+## API endpoints
+- `/api/cases` case and key data with prices history (intended use: front page)
+- `/api/case_description/<case_id>` case description with price history for each description element (item)
+- `/api/key_description/<key_id>` key description
+
+*(By Valve's default, all keys have `sale_price: 250`, which is 2.5$. Keys prices are neither included in database nor api and are subject to interpret on frontend side.)*
 
 ## Further Description
 **Expected value** is an arithmetic mean of a large number of independent realization of random variable, which in this case is opening a case or a more specific random variable, like obtaining some version of one weapon. *(Expected value may be also called **estimated value** in parts of code.)*

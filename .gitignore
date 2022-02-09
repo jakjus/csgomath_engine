@@ -3,3 +3,4 @@ __pycache__/
 steam_market_items.pickle
 *.pyc
 .env
+venv
