@@ -26,10 +26,10 @@ class Extractor:
                  'Well-Worn': 0.0792}
 
     keys_off_market = [
-            {'name': 'Fracture Case Key', 'asset_description': {'icon_url': 'https://static.wikia.nocookie.net/cswikia/images/2/2a/Fracture_Case_Key.png/revision/latest?cb=20201207135639', 'descriptions': [{'value':'This key opens only Fracture Cases'}]}},
-            {'name': 'Dreams & Nightmares Case Key', 'asset_description': {'icon_url': 'https://static.wikia.nocookie.net/cswikia/images/2/21/Crate_key_community_30.png/revision/latest?cb=20220121083708', 'descriptions': [{'value':'This key opens only Dreams & Nightmares Cases'}]}},
-            {'name': 'Shattered Web Case Key', 'asset_description': {'icon_url': 'https://static.wikia.nocookie.net/cswikia/images/2/2f/Shattered_Web_Case_Key.png/revision/latest?cb=20201206140152', 'descriptions': [{'value':'This key opens only Shattered Web Cases'}]}},
-            {'name': 'Snakebite Case Key', 'asset_description': {'icon_url': 'https://static.wikia.nocookie.net/cswikia/images/5/51/Snakebite-case-key.png/revision/latest?cb=20210528135645', 'descriptions': [{'value':'This key opens only Snakebite Cases'}]}}
+            {'name': 'Fracture Case Key', 'asset_description': {'icon_url': 'https://static.wikia.nocookie.net/cswikia/images/2/2a/Fracture_Case_Key.png', 'descriptions': [{'value':'This key opens only Fracture Cases'}]}},
+            {'name': 'Dreams & Nightmares Case Key', 'asset_description': {'icon_url': 'https://static.wikia.nocookie.net/cswikia/images/2/21/Crate_key_community_30.png', 'descriptions': [{'value':'This key opens only Dreams & Nightmares Cases'}]}},
+            {'name': 'Shattered Web Case Key', 'asset_description': {'icon_url': 'https://static.wikia.nocookie.net/cswikia/images/2/2f/Shattered_Web_Case_Key.png', 'descriptions': [{'value':'This key opens only Shattered Web Cases'}]}},
+            {'name': 'Snakebite Case Key', 'asset_description': {'icon_url': 'https://static.wikia.nocookie.net/cswikia/images/5/51/Snakebite-case-key.png', 'descriptions': [{'value':'This key opens only Snakebite Cases'}]}}
             ]
 
     def __init__(self, all_items=[], pickle_name=''):
