@@ -157,17 +157,19 @@ class Extractor:
                 continue
             if not item['color'] in self.odds_rarity:
                 continue
-            if item['value'] not in self.special_items_found:
-                for special_item in self.special_items:
-                    if special_item['box_desc_name'] in item['value']:
+            for special_item in self.special_items:
+                if special_item['box_desc_name'] in item['value']:
+                    if item['value'] not in self.special_items_found:
                         item_value = self.get_many_weapon_value(
                             special_item['search_phrase'])
                         self.special_items_found[item['value']] = item_value
-                        found_special_item = 1
-                        break
-                if not found_special_item:
-                    item_value = self.get_estimated_one_weapon_value(
-                        item['value'])
+                    else:
+                        item_value = self.special_items_found[item['value']]
+                    found_special_item = 1
+                    break
+            if not found_special_item:
+                item_value = self.get_estimated_one_weapon_value(
+                    item['value'])
             item['total'] = item_value['total']
             # item['item_details'] = item_value['item_details']
             total_d[item['color']]['total'] += item_value['total'] * \
